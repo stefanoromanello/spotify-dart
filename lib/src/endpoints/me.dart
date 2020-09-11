@@ -74,7 +74,7 @@ class Me extends EndpointPaging {
     return items.map((item) => Track.fromJson(item));
   }
 
-   Future<Iterable<Track>> topArtistsWeeks() async {
+   Future<Iterable<Artist>> topArtistsWeeks() async {
     var jsonString = await _api._get('$_path/top/artists?time_range=long_term&limit=50');
     var map = json.decode(jsonString);
 
@@ -82,7 +82,7 @@ class Me extends EndpointPaging {
     return items.map((item) => Artist.fromJson(item));
   }
 
-  Future<Iterable<Track>> topArtistsMonths() async {
+  Future<Iterable<Artist>> topArtistsMonths() async {
     var jsonString = await _api._get('$_path/top/artists?time_range=long_term&limit=50');
     var map = json.decode(jsonString);
 
@@ -90,7 +90,7 @@ class Me extends EndpointPaging {
     return items.map((item) => Artist.fromJson(item));
   }
 
-  Future<Iterable<Track>> topArtistsYears() async {
+  Future<Iterable<Artist>> topArtistsYears() async {
     var jsonString = await _api._get('$_path/top/artists?time_range=long_term&limit=50');
     var map = json.decode(jsonString);
 
