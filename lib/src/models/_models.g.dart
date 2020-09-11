@@ -358,37 +358,46 @@ RecommendationsSeed _$RecommendationsSeedFromJson(Map<String, dynamic> json) {
 }
 
 Track _$TrackFromJson(Map<String, dynamic> json) {
-  return Track()
-    ..album = json['album'] == null
-        ? null
-        : AlbumSimple.fromJson(json['album'] as Map<String, dynamic>)
-    ..artists = (json['artists'] as List)
-        ?.map((e) =>
-            e == null ? null : Artist.fromJson(e as Map<String, dynamic>))
-        ?.toList()
-    ..availableMarkets =
-        (json['available_markets'] as List)?.map((e) => e as String)?.toList()
-    ..discNumber = json['disc_number'] as int
-    ..durationMs = json['duration_ms'] as int
-    ..explicit = json['explicit'] as bool
-    ..externalIds = json['external_ids'] == null
-        ? null
-        : ExternalIds.fromJson(json['external_ids'] as Map<String, dynamic>)
-    ..externalUrls = json['external_urls'] == null
-        ? null
-        : ExternalUrls.fromJson(json['external_urls'] as Map<String, dynamic>)
-    ..href = json['href'] as String
-    ..id = json['id'] as String
-    ..isPlayable = json['is_playable'] as bool
-    ..linkedFrom = json['linked_from'] == null
-        ? null
-        : TrackLink.fromJson(json['linked_from'] as Map<String, dynamic>)
-    ..name = json['name'] as String
-    ..popularity = json['popularity'] as int
-    ..previewUrl = json['preview_url'] as String
-    ..trackNumber = json['track_number'] as int
-    ..type = json['type'] as String
-    ..uri = json['uri'] as String;
+  if (json == null)
+    return Track()
+      ..album = null
+      ..artists = null
+      ..availableMarkets = null
+      ..discNumber = 0
+      ..durationMs = 0
+      ..explicit = false
+      ..externalIds = null
+      ..externalUrls = null
+      ..href = ""
+      ..id = ""
+      ..isPlayable = false
+      ..linkedFrom = null
+      ..name = ""
+      ..popularity = 0
+      ..previewUrl = ""
+      ..trackNumber = 0
+      ..type = ""
+      ..uri = "";
+  else
+    return Track()
+      ..album = json['album'] == null ? null : AlbumSimple.fromJson(json['album'] as Map<String, dynamic>)
+      ..artists = (json['artists'] as List)?.map((e) => e == null ? null : Artist.fromJson(e as Map<String, dynamic>))?.toList()
+      ..availableMarkets = (json['available_markets'] as List)?.map((e) => e as String)?.toList()
+      ..discNumber = json['disc_number'] as int
+      ..durationMs = json['duration_ms'] as int
+      ..explicit = json['explicit'] as bool
+      ..externalIds = json['external_ids'] == null ? null : ExternalIds.fromJson(json['external_ids'] as Map<String, dynamic>)
+      ..externalUrls = json['external_urls'] == null ? null : ExternalUrls.fromJson(json['external_urls'] as Map<String, dynamic>)
+      ..href = json['href'] as String
+      ..id = json['id'] as String
+      ..isPlayable = json['is_playable'] as bool
+      ..linkedFrom = json['linked_from'] == null ? null : TrackLink.fromJson(json['linked_from'] as Map<String, dynamic>)
+      ..name = json['name'] as String
+      ..popularity = json['popularity'] as int
+      ..previewUrl = json['preview_url'] as String
+      ..trackNumber = json['track_number'] as int
+      ..type = json['type'] as String
+      ..uri = json['uri'] as String;
 }
 
 TrackSimple _$TrackSimpleFromJson(Map<String, dynamic> json) {
