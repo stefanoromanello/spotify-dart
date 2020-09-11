@@ -42,8 +42,16 @@ class Me extends EndpointPaging {
     return items.map((item) => Track.fromJson(item['track']));
   }
 
+  Future<Iterable<Track>> topTracks() async {
+    var jsonString = await _api._get('$_path/top/tracks');
+    var map = json.decode(jsonString);
+
+    var items = map['items'] as Iterable<dynamic>;
+    return items.map((item) => Track.fromJson(item));
+  }
+
   Future<Iterable<Track>> topTracksWeeks() async {
-    var jsonString = await _api._get('$_path/top/tracks?time_range=short_term');
+    var jsonString = await _api._get('$_path/top/tracks?time_range=short_term&limit=50');
     var map = json.decode(jsonString);
 
     var items = map['items'] as Iterable<dynamic>;
@@ -51,7 +59,7 @@ class Me extends EndpointPaging {
   }
 
   Future<Iterable<Track>> topTracksMonths() async {
-    var jsonString = await _api._get('$_path/top/tracks?time_range=medium_term');
+    var jsonString = await _api._get('$_path/top/tracks?time_range=medium_term&limit=50');
     var map = json.decode(jsonString);
 
     var items = map['items'] as Iterable<dynamic>;
@@ -59,36 +67,36 @@ class Me extends EndpointPaging {
   }
 
   Future<Iterable<Track>> topTracksYears() async {
-    var jsonString = await _api._get('$_path/top/tracks?time_range=long_term');
+    var jsonString = await _api._get('$_path/top/tracks?time_range=long_term&limit=50');
     var map = json.decode(jsonString);
 
     var items = map['items'] as Iterable<dynamic>;
     return items.map((item) => Track.fromJson(item));
   }
 
-  Future<Iterable<Track>> topArtistsWeeks() async {
-    var jsonString = await _api._get('$_path/top/artists?time_range=long_term');
+   Future<Iterable<Track>> topArtistsWeeks() async {
+    var jsonString = await _api._get('$_path/top/artists?time_range=long_term&limit=50');
     var map = json.decode(jsonString);
 
     var items = map['items'] as Iterable<dynamic>;
-    return items.map((item) => Track.fromJson(item));
+    return items.map((item) => Artist.fromJson(item));
   }
 
   Future<Iterable<Track>> topArtistsMonths() async {
-    var jsonString = await _api._get('$_path/top/artists?time_range=long_term');
+    var jsonString = await _api._get('$_path/top/artists?time_range=long_term&limit=50');
     var map = json.decode(jsonString);
 
     var items = map['items'] as Iterable<dynamic>;
-    return items.map((item) => Track.fromJson(item));
+    return items.map((item) => Artist.fromJson(item));
   }
 
   Future<Iterable<Track>> topArtistsYears() async {
-    var jsonString = await _api._get('$_path/top/artists?time_range=long_term');
+    var jsonString = await _api._get('$_path/top/artists?time_range=long_term&limit=50');
     var map = json.decode(jsonString);
 
     var items = map['items'] as Iterable<dynamic>;
-    return items.map((item) => Track.fromJson(item));
-  }
+    return items.map((item) => Artist.fromJson(item));
+  } 
 
   Future<Iterable<Device>> devices() async {
     return _api._get('$_path/player/devices').then(_parseDeviceJson);
