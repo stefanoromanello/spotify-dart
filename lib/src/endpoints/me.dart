@@ -75,7 +75,7 @@ class Me extends EndpointPaging {
   }
 
    Future<Iterable<Artist>> topArtistsWeeks() async {
-    var jsonString = await _api._get('$_path/top/artists?time_range=long_term&limit=50');
+    var jsonString = await _api._get('$_path/top/artists?time_range=short_term&limit=50');
     var map = json.decode(jsonString);
 
     var items = map['items'] as Iterable<dynamic>;
@@ -83,7 +83,7 @@ class Me extends EndpointPaging {
   }
 
   Future<Iterable<Artist>> topArtistsMonths() async {
-    var jsonString = await _api._get('$_path/top/artists?time_range=long_term&limit=50');
+    var jsonString = await _api._get('$_path/top/artists?time_range=medium_term&limit=50');
     var map = json.decode(jsonString);
 
     var items = map['items'] as Iterable<dynamic>;
