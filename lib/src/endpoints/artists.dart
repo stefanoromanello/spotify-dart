@@ -16,16 +16,17 @@ class Artists extends EndpointPaging {
     return Artist.fromJson(map);
   }
 
-  //Max 50 ids for request
+  //Max 50 ids for request 
   Future<List<Artist>> getMultipleArtists(List<String> artistsId) async {
     String ids = artistsId.join(',');
-    var jsonString = await _api._get('$_path/artists/$ids');
+    String path = '$_path/?ids=$ids';
+    var jsonString = await _api._get(path);
 
     var map = json.decode(jsonString);
 
-    List<Artist> artists = map.map((e) => Artist.fromJson(e)).toList();
+    List<dynamic> artists = map["artists"].map((e) => Artist.fromJson(e)).toList();
 
-    return artists;
+    return List<Artist>.from(artists); 
   }
 
   Future<Iterable<Track>> getTopTracks(
