@@ -13,9 +13,7 @@ class Artists extends EndpointPaging {
     var jsonString = await _api._get('$_path/$artistId');
     var map = json.decode(jsonString);
 
-    List<Artist> artists = map.map((e) => Artist.fromJson(e)).toList();
-
-    return artists;
+    return Artist.fromJson(map);
   }
 
   //Max 50 ids for request
@@ -25,9 +23,9 @@ class Artists extends EndpointPaging {
 
     var map = json.decode(jsonString);
 
-    List<Artist> play = map.map((e) => Artist.fromJson(e)).toList();
+    List<Artist> artists = map.map((e) => Artist.fromJson(e)).toList();
 
-    return play;
+    return artists;
   }
 
   Future<Iterable<Track>> getTopTracks(
