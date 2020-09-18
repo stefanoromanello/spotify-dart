@@ -25,7 +25,9 @@ class Artists extends EndpointPaging {
 
     var map = json.decode(jsonString);
 
-    return Artist.fromJson(map);
+    List<Artist> play = map.map((e) => Artist.fromJson(e)).toList();
+
+    return play;
   }
 
   Future<Iterable<Track>> getTopTracks(
