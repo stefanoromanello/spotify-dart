@@ -25,7 +25,7 @@ class Artists extends EndpointPaging {
     var map = json.decode(jsonString);
 
     List<dynamic> artists = map["artists"].map((e) => Artist.fromJson(e)).toList();
-    artists.removeWhere((element as Artist) => element.id == "");
+    artists.removeWhere((element) => element.id == "");
 
     return List<Artist>.from(artists); 
   }

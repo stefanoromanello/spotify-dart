@@ -72,7 +72,7 @@ Artist _$ArtistFromJson(Map<String, dynamic> json) {
       ..followers = null
       ..genres = []
       ..images = []
-      ..popularity = 0
+      ..popularity = 0;
   else
     return Artist()
       ..externalUrls = json['external_urls'] == null ? null : ExternalUrls.fromJson(json['external_urls'] as Map<String, dynamic>)
