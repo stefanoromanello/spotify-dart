@@ -91,7 +91,6 @@ class Playlists extends EndpointPaging {
   Future<bool> modifyPlaylistDetails({String id, String name, String description, bool isPublic, bool isCollaborative}) async {
     String body = jsonEncode(<String, dynamic>{
       'name': name,
-      'description': description,
       'public': isPublic,
       'collaborative': isCollaborative,
     });

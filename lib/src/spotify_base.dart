@@ -139,6 +139,8 @@ abstract class SpotifyApiBase {
         unawaited(Future.delayed(Duration(seconds: ex.retryAfter)).then((v) => _shouldWait = false));
       } on Exception catch (ex) {
         return "error";
+      } on SpotifyException catch (ex) {
+        return "error";
       }
     }
     throw SpotifyException('Could not complete request');
