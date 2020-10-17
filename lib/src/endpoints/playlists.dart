@@ -10,27 +10,20 @@ class Playlists extends EndpointPaging {
   Playlists(SpotifyApiBase api) : super(api);
 
   Future<Playlist> get(String playlistId) async {
-    return Playlist.fromJson(
-        jsonDecode(await _api._get('v1/playlists/$playlistId')));
+    return Playlist.fromJson(jsonDecode(await _api._get('v1/playlists/$playlistId')));
   }
 
   Pages<PlaylistSimple> get featured {
-    return _getPages(
-        '$_path/featured-playlists',
-        (json) => PlaylistSimple.fromJson(json),
-        'playlists',
-        (json) => PlaylistsFeatured.fromJson(json));
+    return _getPages('$_path/featured-playlists', (json) => PlaylistSimple.fromJson(json), 'playlists', (json) => PlaylistsFeatured.fromJson(json));
   }
 
   Pages<PlaylistSimple> get me {
-    return _getPages(
-        'v1/me/playlists', (json) => PlaylistSimple.fromJson(json));
+    return _getPages('v1/me/playlists', (json) => PlaylistSimple.fromJson(json));
   }
 
   /// [playlistId] - the Spotify playlist ID
   Pages<Track> getTracksByPlaylistId(playlistId) {
-    return _getPages('v1/playlists/$playlistId/tracks',
-        (json) => Track.fromJson(json['track']));
+    return _getPages('v1/playlists/$playlistId/tracks', (json) => Track.fromJson(json['track']));
   }
 
   /// [userId] - the Spotify user ID
@@ -38,8 +31,7 @@ class Playlists extends EndpointPaging {
   /// [playlistName] - the name of the new playlist
   Future<Playlist> createPlaylist(String userId, String playlistName) async {
     final url = 'v1/users/$userId/playlists';
-    final playlistJson =
-        await _api._post(url, jsonEncode({'name': playlistName}));
+    final playlistJson = await _api._post(url, jsonEncode({'name': playlistName}));
     return await Playlist.fromJson(jsonDecode(playlistJson));
   }
 
@@ -64,8 +56,7 @@ class Playlists extends EndpointPaging {
     await _api._post(url, jsonEncode({'uris': trackUris}));
   }
 
-  Future<Null> removeTrack(String trackUri, String playlistId,
-      [List<int> positions]) async {
+  Future<Null> removeTrack(String trackUri, String playlistId, [List<int> positions]) async {
     final url = 'v1/playlists/$playlistId/tracks';
     final track = <String, dynamic>{'uri': trackUri};
     if (positions != null) {
@@ -90,30 +81,28 @@ class Playlists extends EndpointPaging {
   /// (American English).
   ///
   /// [categoryId] - the Spotify category ID for the category.
-  Pages<PlaylistSimple> getByCategoryId(String categoryId,
-      {String country, String locale}) {
+  Pages<PlaylistSimple> getByCategoryId(String categoryId, {String country, String locale}) {
     final query = _buildQuery({'country': country, 'locale': locale});
 
-    return _getPages(
-        '$_path/categories/$categoryId/playlists?$query',
-        (json) => PlaylistSimple.fromJson(json),
-        'playlists',
+    return _getPages('$_path/categories/$categoryId/playlists?$query', (json) => PlaylistSimple.fromJson(json), 'playlists',
         (json) => PlaylistsFeatured.fromJson(json));
   }
 
-  /// [playlistId] - the playlist ID
-  ///
-  /// [public] - Defaults to `true`. If `true` the playlist will be included
-  /// in user’s public playlists, if `false` it will remain private.
-  Future<Null> followPlaylist(String playlistId, {bool public = true}) async {
-    final url = 'v1/playlists/$playlistId/followers';
-    final body = jsonEncode({'public': public});
-    await _api._put(url, body);
+  Future<bool> modifyPlaylistDetails({String id, String name, String description, bool isPublic, bool isCollaborative}) async {
+    String body = jsonEncode(<String, dynamic>{
+      'name': name,
+      'description': description,
+      'public': isPublic,
+      'collaborative': isCollaborative,
+    });
+    String result = await _api._put('v1/playlists/$id', body);
+
+    return result != "error";
   }
 
-  /// [playlistId] - the playlist ID
-  Future<Null> unfollowPlaylist(String playlistId) async {
-    final url = 'v1/playlists/$playlistId/followers';
-    await _api._delete(url);
+  Future<bool> modifyPlaylistImage({String id, String image}) async {
+    String result = await _api._putImage('v1/playlists/$id/images', image);
+
+    return result != "error";
   }
 }
