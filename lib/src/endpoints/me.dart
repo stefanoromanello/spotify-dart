@@ -46,7 +46,8 @@ class Me extends EndpointPaging {
           'before': before?.millisecondsSinceEpoch
         }));
     final map = json.decode(jsonString);
-    return map['items'].map((item) => PlayHistory.fromJson(item));
+    var items = map['items'] as Iterable<dynamic>;
+    return items.map((item) => PlayHistory.fromJson(item));
   }
 
   Future<Iterable<Track>> topTracks() async {
