@@ -16,6 +16,10 @@ class Tracks extends EndpointBase {
 
   Future<Track> get(String trackId) async {
     var jsonString = await _api._get('$_path/$trackId');
+
+    if(jsonString == "error")
+      return null;
+      
     var map = json.decode(jsonString);
 
     return Track.fromJson(map);
