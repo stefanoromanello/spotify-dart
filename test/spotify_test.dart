@@ -57,6 +57,33 @@ Future main() async {
     });
   });
 
+  group('Shows', () {
+    test('get', () async {
+      var show = await spotify.shows.get('4AlxqGkkrqe0mfIx3Mi7Xt');
+
+      expect(show.type, 'show');
+      expect(show.id, '4AlxqGkkrqe0mfIx3Mi7Xt');
+      expect(show.name, 'Universo Flutter');
+    });
+
+    test('list', () async {
+      var shows = await spotify.shows
+          .list(['4AlxqGkkrqe0mfIx3Mi7Xt', '4AlxqGkkrqe0mfIx3Mi7Xt']);
+
+      expect(shows.length, 2);
+    });
+  });
+
+  group('Show episodes', () {
+    test('list', () async {
+      var episodes = await spotify.shows.episodes('4AlxqGkkrqe0mfIx3Mi7Xt');
+      var firstEpisode = (await episodes.first()).items.first;
+
+      expect(firstEpisode.type, 'episode');
+      expect(firstEpisode.explicit, false);
+    });
+  });
+
   group('Search', () {
     test('get', () async {
       var searchResult = await spotify.search.get('metallica').first();
@@ -96,6 +123,27 @@ Future main() async {
       expect(result.first.name, 'My fridge');
       expect(result.first.type, DeviceType.Computer);
       expect(result.first.volumePercent, 100);
+    });
+
+    test('recentlyPlayed', () async {
+      // the parameters don't do anything. They are just dummies
+      var result =
+          await spotify.me.recentlyPlayed(limit: 3, before: DateTime.now());
+      expect(result.length, 2);
+      var first = result.first;
+      expect(first.track != null, true);
+
+      // just testing some sample attributes
+      var firstTrack = first.track;
+      expect(firstTrack.durationMs, 108546);
+      expect(firstTrack.explicit, false);
+      expect(firstTrack.id, '2gNfxysfBRfl9Lvi9T3v6R');
+      expect(firstTrack.artists.length, 1);
+      expect(firstTrack.artists.first.name, 'Tame Impala');
+
+      var second = result.last;
+      expect(second.playedAt, DateTime.tryParse('2016-12-13T20:42:17.016Z'));
+      expect(second.context.uri, 'spotify:artist:5INjqkS1o8h1imAzPqGZBb');
     });
   });
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0
+
+- implement podcast endpoints 
+
+## 0.3.7+1
+
+- fix recentlyPlayed endpoint and add unit tests
+
 ## 0.3.7
 
 - add /me/top/artists endpoint
