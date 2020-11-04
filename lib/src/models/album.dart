@@ -23,6 +23,8 @@ class Album extends AlbumSimple {
   /// (If not yet classified, the array is empty.)
   List<String> genres;
 
+  List<TrackSimple> tracks;
+
   /// The label for the album.
   String label;
 
