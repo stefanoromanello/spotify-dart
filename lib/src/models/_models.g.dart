@@ -219,6 +219,7 @@ Paging<T> _$PagingFromJson<T>(Map<String, dynamic> json) {
     ..next = json['next'] as String
     ..offset = json['offset'] as int
     ..previous = json['previous'] as String
+    ..cursorsAfter = json['cursors'] != null ? json['cursors']['after'] as String : null
     ..total = json['total'] as int;
 }
 

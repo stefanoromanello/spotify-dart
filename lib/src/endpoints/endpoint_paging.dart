@@ -6,12 +6,10 @@ part of spotify;
 abstract class EndpointPaging extends EndpointBase {
   EndpointPaging(SpotifyApiBase api) : super(api);
 
-  Pages<T> _getPages<T>(String path, ParserFunction<T> pageItemParser,
-          [String pageKey, ParserFunction<Object> pageContainerParser]) =>
+  Pages<T> _getPages<T>(String path, ParserFunction<T> pageItemParser, [String pageKey, ParserFunction<Object> pageContainerParser]) =>
       Pages(_api, path, pageItemParser, pageKey, pageContainerParser);
 
-  BundledPages _getBundledPages<T>(
-          String path, Map<String, ParserFunction<T>> pageItemParsers,
+  BundledPages _getBundledPages<T>(String path, Map<String, ParserFunction<T>> pageItemParsers,
           [String pageKey, ParserFunction<Object> pageContainerParser]) =>
       BundledPages(_api, path, pageItemParsers, pageKey, pageContainerParser);
 }
@@ -38,8 +36,24 @@ class Page<T> {
   /// The object containing this page, if applicable
   Object get container => _container;
 
-  bool get isLast => _paging.offset + _paging.limit >= _paging.total;
-  int get nextOffset => _paging.offset + _paging.limit;
+  bool get isLast {
+    if (_paging.offset != null)
+      return _paging.offset + _paging.limit >= _paging.total;
+    else
+      return _paging.next==null;
+  }
+
+  int get nextOffset {
+    if (_paging.offset != null)
+      return _paging.offset + _paging.limit;
+    else
+      return null;  
+  }
+
+  int get totalItems => _paging.total; 
+
+  String get cursorsAfter => _paging.cursorsAfter;
+  
 }
 
 const defaultLimit = 20;
@@ -70,22 +84,16 @@ class Pages<T> extends _Pages<Page<T>> {
   final ParserFunction<T> _pageParser;
   final List<Page<T>> _bufferedPages = [];
   bool _cancelled = false;
-  Pages(SpotifyApiBase api, String path, this._pageParser,
-      [String pageKey, ParserFunction<Object> pageContainerMapper])
+  Pages(SpotifyApi api, String path, this._pageParser, [String pageKey, ParserFunction<Object> pageContainerMapper])
       : super(api, path, pageKey, pageContainerMapper);
 
-  Pages.fromPaging(SpotifyApiBase api, Paging<T> paging, this._pageParser,
-      [String pageKey, ParserFunction<Object> pageContainerMapper])
-      : super(api, Uri.parse(paging.href).path.substring(1), pageKey,
-            pageContainerMapper) {
+  Pages.fromPaging(SpotifyApi api, Paging<T> paging, this._pageParser, [String pageKey, ParserFunction<Object> pageContainerMapper])
+      : super(api, Uri.parse(paging.href).path.substring(1), pageKey, pageContainerMapper) {
     _bufferedPages.add(Page<T>(paging, _pageParser));
   }
 
   Future<Iterable<T>> all([int limit = defaultLimit]) {
-    return stream(limit)
-        .map((page) => page.items)
-        .toList()
-        .then((pages) => pages.expand((page) => page));
+    return stream(limit).map((page) => page.items).toList().then((pages) => pages.expand((page) => page));
   }
 
   Stream<Page<T>> stream([int limit = defaultLimit]) {
@@ -142,6 +150,7 @@ class Pages<T> extends _Pages<Page<T>> {
     var newPath = '$_path${pathDelimiter}limit=$limit&offset=$offset';
 
     var jsonString = await _api._get(newPath);
+
     var map = json.decode(jsonString);
 
     if (_pageContainerParser == null) {
@@ -158,14 +167,20 @@ class Pages<T> extends _Pages<Page<T>> {
 class BundledPages extends _Pages<List<Page<Object>>> {
   final Map<String, ParserFunction<Object>> _pageMappers;
 
-  BundledPages(SpotifyApiBase api, String path, this._pageMappers,
-      [String pageKey, ParserFunction<Object> pageContainerParser])
+  BundledPages(SpotifyApiBase api, String path, this._pageMappers, [String pageKey, ParserFunction<Object> pageContainerParser])
       : super(api, path, pageKey, pageContainerParser);
 
   @override
   Future<List<Page<Object>>> getPage(int limit, int offset) async {
     var pathDelimiter = _path.contains('?') ? '&' : '?';
     var path = '$_path${pathDelimiter}limit=$limit&offset=$offset';
+
+    return _api._get(path).then(_parseBundledPage);
+  }
+
+  Future<List<Page<Object>>> getPageAfter(int limit, String after) async {
+    var pathDelimiter = _path.contains('?') ? '&' : '?';
+    var path = '$_path${pathDelimiter}limit=$limit&after=$after';
 
     return _api._get(path).then(_parseBundledPage);
   }

@@ -40,4 +40,7 @@ class Paging<T> extends Object {
 
   /// The total number of items available to return.
   int total;
+
+  //Cursor used for followers endpoint
+  String cursorsAfter;
 }
