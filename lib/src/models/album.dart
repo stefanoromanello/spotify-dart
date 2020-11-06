@@ -35,15 +35,15 @@ class Album extends AlbumSimple {
 
   /// The date the album was first released, for example "1981-12-15".
   /// Depending on the precision, it might be shown as "1981" or "1981-12".
-  @JsonKey(name: 'release_date')
+ /*  @JsonKey(name: 'release_date')
   @override
-  String releaseDate;
+  String releaseDate; */
 
   /// The precision with which release_date value is known:
   ///     "year", "month", or "day".
-  @JsonKey(name: 'release_date_precision')
+  /* @JsonKey(name: 'release_date_precision')
   @override
-  String releaseDatePrecision;
+  String releaseDatePrecision; */
 }
 
 @JsonSerializable(createToJson: false)
