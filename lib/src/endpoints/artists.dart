@@ -11,29 +11,35 @@ class Artists extends EndpointPaging {
 
   Future<Artist> get(String artistId) async {
     var jsonString = await _api._get('$_path/$artistId');
+
+    if (jsonString == "error") return null;
+
     var map = json.decode(jsonString);
 
     return Artist.fromJson(map);
   }
 
-  //Max 50 ids for request 
+  //Max 50 ids for request
   Future<List<Artist>> getMultipleArtists(List<String> artistsId) async {
     String ids = artistsId.join(',');
     String path = '$_path/?ids=$ids';
     var jsonString = await _api._get(path);
+
+    if (jsonString == "error") return [];
 
     var map = json.decode(jsonString);
 
     List<dynamic> artists = map["artists"].map((e) => Artist.fromJson(e)).toList();
     artists.removeWhere((element) => element.id == "");
 
-    return List<Artist>.from(artists); 
+    return List<Artist>.from(artists);
   }
 
-  Future<Iterable<Track>> getTopTracks(
-      String artistId, String countryCode) async {
-    var jsonString =
-        await _api._get('$_path/$artistId/top-tracks?country=$countryCode');
+  Future<Iterable<Track>> getTopTracks(String artistId, String countryCode) async {
+    var jsonString = await _api._get('$_path/$artistId/top-tracks?country=$countryCode');
+
+    if (jsonString == "error") return [];
+
     var map = json.decode(jsonString);
 
     var topTracks = map['tracks'] as Iterable<dynamic>;
@@ -42,6 +48,9 @@ class Artists extends EndpointPaging {
 
   Future<Iterable<Artist>> getRelatedArtists(String artistId) async {
     var jsonString = await _api._get('$_path/$artistId/related-artists');
+
+    if (jsonString == "error") return [];
+
     var map = json.decode(jsonString);
 
     var relatedArtists = map['artists'] as Iterable<dynamic>;
@@ -50,6 +59,9 @@ class Artists extends EndpointPaging {
 
   Future<Iterable<Artist>> list(Iterable<String> artistIds) async {
     var jsonString = await _api._get('$_path?ids=${artistIds.join(',')}');
+
+    if (jsonString == "error") return [];
+
     var map = json.decode(jsonString);
 
     var artistsMap = map['artists'] as Iterable<dynamic>;
@@ -58,6 +70,9 @@ class Artists extends EndpointPaging {
 
   Future<Iterable<Artist>> relatedArtists(String artistId) async {
     var jsonString = await _api._get('$_path/$artistId/related-artists');
+
+    if (jsonString == "error") return [];
+    
     var map = json.decode(jsonString);
 
     var artistsMap = map['artists'] as Iterable<dynamic>;
@@ -79,11 +94,8 @@ class Artists extends EndpointPaging {
     String country,
     List<String> includeGroups,
   }) {
-    final _includeGroups =
-        includeGroups == null ? null : includeGroups.join(',');
-    final query =
-        _buildQuery({'include_groups': _includeGroups, 'country': country});
-    return _getPages(
-        '$_path/$artistId/albums?$query', (json) => Album.fromJson(json));
+    final _includeGroups = includeGroups == null ? null : includeGroups.join(',');
+    final query = _buildQuery({'include_groups': _includeGroups, 'country': country});
+    return _getPages('$_path/$artistId/albums?$query', (json) => Album.fromJson(json));
   }
 }
