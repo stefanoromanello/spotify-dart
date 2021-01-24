@@ -37,8 +37,7 @@ class Playlists extends EndpointPaging {
   /// be collaborative.
   ///
   /// [description] - the description of the new playlist
-  Future<Playlist> createPlaylist(String userId, String playlistName,
-      {bool public, bool collaborative, String description}) async {
+  Future<Playlist> createPlaylist(String userId, String playlistName, {bool public, bool collaborative, String description}) async {
     final url = 'v1/users/$userId/playlists';
     final json = <String, dynamic>{'name': playlistName};
 
@@ -71,15 +70,15 @@ class Playlists extends EndpointPaging {
     await _api._post(url, jsonEncode({'uris': trackUris}));
   }
 
-  Future<Null> removeTracks(List<String> trackUri, String playlistId, [List<int> positions]) async {
+  Future<bool> removeTracks(List<String> trackUri, String playlistId, [List<int> positions]) async {
     final url = 'v1/playlists/$playlistId/tracks';
-    
+
     List<dynamic> tracks = trackUri.map((e) => {'uri': e}).toList();
 
-    final body = jsonEncode({
-      'tracks': tracks
-    });
-    await _api._delete(url, body);
+    final body = jsonEncode({'tracks': tracks});
+    String result = await _api._delete(url, body);
+
+    return result != "error";
   }
 
   /// [country] - a country: an ISO 3166-1 alpha-2 country code. Provide this
