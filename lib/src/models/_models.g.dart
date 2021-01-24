@@ -42,14 +42,6 @@ Album _$AlbumFromJson(Map<String, dynamic> json) {
     ..label = json['label'] as String
     ..popularity = json['popularity'] as int
     ..releaseDate = json['release_date'] as String
-    ..tracks = json['tracks'] != null
-        ? (json['tracks']['items'] as List)?.map((e) {
-            if (e == null)
-              return null;
-            else
-              return TrackSimple.fromJson(e as Map<String, dynamic>);
-          })?.toList()
-        : null
     ..releaseDatePrecision = json['release_date_precision'] as String;
 }
 
