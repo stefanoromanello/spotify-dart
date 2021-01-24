@@ -21,9 +21,7 @@ class Album extends AlbumSimple {
   ///     "Prog Rock", "Post-Grunge".
   ///
   /// (If not yet classified, the array is empty.)
-  List<String> genres;
-
-  List<TrackSimple> tracks;
+  List<String> genres; 
 
   /// The label for the album.
   String label;
